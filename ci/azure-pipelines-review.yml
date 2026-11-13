@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# EXAMPLE ONLY. This pipeline is not connected to any project and is not run by the lab.
+# It shows how a single-pass Claude Code review can run on every pull request in Azure Pipelines.
+#
+# To use it for real:
+#   1. Create a pipeline from this file and add it as a Build Validation policy on the target branch
+#      (in Azure Repos, PR builds are triggered by the branch policy, not by a "pr:" key).
+#   2. Add a secret pipeline variable ANTHROPIC_API_KEY (or switch to Bedrock / Foundry settings).
+#   3. Give the project's Build Service identity "Contribute to pull requests" on the repository,
+#      so $(System.AccessToken) can post a comment thread.
+# ---------------------------------------------------------------------------
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    fetchDepth: 0
+    persistCredentials: true
+
+  - task: NodeTool@0
+    displayName: Use Node.js 22
+    inputs:
+      versionSpec: '22.x'
+
+  - script: npm install -g @anthropic-ai/claude-code
+    displayName: Install Claude Code
+
+  - script: |
+      set -euo pipefail
+      # System.PullRequest.TargetBranch looks like refs/heads/main
+      TARGET="$(System.PullRequest.TargetBranch)"
+      TARGET="${TARGET#refs/heads/}"
+      git fetch --no-tags origin "$TARGET"
+      git diff --stat "origin/$TARGET...HEAD"
+
+      PROMPT_FILE="$(Agent.TempDirectory)/review-prompt.md"
+      cat ci/review-prompt.md > "$PROMPT_FILE"
+      printf '\nDIFF_COMMAND: git diff origin/%s...HEAD\n' "$TARGET" >> "$PROMPT_FILE"
+
+      # Headless, read-only, one pass: dontAsk refuses anything that is not explicitly allowed.
+      claude -p "$(cat "$PROMPT_FILE")" \
+        --output-format json \
+        --permission-mode dontAsk \
+        --allowedTools "Read,Grep,Glob,Bash(git diff *)" \
+        --max-turns 30 \
+        > "$(Build.ArtifactStagingDirectory)/claude-review.json"
+    displayName: Claude Code review (single pass)
+    env:
+      ANTHROPIC_API_KEY: $(ANTHROPIC_API_KEY)
+
+  - script: |
+      set -euo pipefail
+      python3 - "$(Build.ArtifactStagingDirectory)/claude-review.json" "$(Agent.TempDirectory)/thread.json" <<'PY'
+      import json, sys
+      raw = json.load(open(sys.argv[1], encoding="utf-8"))
+      text = raw.get("result", "")
+      try:
+          review = json.loads(text)
+      except json.JSONDecodeError:
+          review = {"findings": [], "notChecked": ["review output was not valid JSON"], "summary": text[:2000]}
+      rows = ["| ระดับ | ไฟล์:บรรทัด | หมวด | หลักฐาน | วิธีแก้ | ความมั่นใจ |", "|---|---|---|---|---|---|"]
+      for f in review.get("findings", []):
+          cell = lambda v: str(v).replace("|", "\\|").replace("\n", " ")
+          rows.append(f"| {cell(f.get('severity'))} | {cell(f.get('file'))}:{cell(f.get('line'))} | {cell(f.get('category'))} | "
+                      f"{cell(f.get('evidence'))} | {cell(f.get('fix'))} | {cell(f.get('confidence'))} |")
+      not_checked = "\n".join(f"- {x}" for x in review.get("notChecked", [])) or "- (ไม่มี)"
+      body = (f"### Claude review (single pass)\n\n{review.get('summary', '')}\n\n" + "\n".join(rows) +
+              f"\n\n**ไม่ได้ตรวจ**\n{not_checked}\n\ncost USD: {raw.get('total_cost_usd', 'n/a')}")
+      payload = {"comments": [{"parentCommentId": 0, "content": body, "commentType": 1}], "status": 1}
+      json.dump(payload, open(sys.argv[2], "w", encoding="utf-8"), ensure_ascii=False)
+      PY
+
+      curl -sS --fail -X POST \
+        -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
+        -H "Content-Type: application/json; charset=utf-8" \
+        --data-binary @"$(Agent.TempDirectory)/thread.json" \
+        "$(System.CollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/pullRequests/$(System.PullRequest.PullRequestId)/threads?api-version=7.1"
+    displayName: Post review as a PR comment thread
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+  - publish: $(Build.ArtifactStagingDirectory)/claude-review.json
+    artifact: claude-review
+    displayName: Keep raw review JSON (for scoring recall and false positives)

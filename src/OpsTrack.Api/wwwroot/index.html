@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpsTrack ระบบแจ้งซ่อม</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <strong>OpsTrack</strong>
+      <span class="muted">ระบบแจ้งซ่อมเครื่องจักร (ระบบจำลองสำหรับฝึกอบรม)</span>
+    </div>
+    <div class="meta" id="meta" data-testid="meta">กำลังโหลด...</div>
+    <div class="user">
+      <label>ผู้ใช้
+        <input id="user-name" data-testid="user-name" value="op.malee" autocomplete="off">
+      </label>
+      <label>บทบาท
+        <select id="user-role" data-testid="user-role">
+          <option value="Operator">Operator (ผู้แจ้ง)</option>
+          <option value="Technician">Technician (ช่าง)</option>
+          <option value="Supervisor">Supervisor (หัวหน้า)</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button type="button" class="tab active" data-view="requests">งานซ่อม</button>
+    <button type="button" class="tab" data-view="report">รายงานสรุป</button>
+  </nav>
+
+  <div id="message" class="message" role="status" data-testid="message" hidden></div>
+
+  <main>
+    <section id="view-requests" class="view">
+      <form id="create-form" class="card" data-testid="create-form">
+        <h2>แจ้งซ่อมใหม่</h2>
+        <div class="grid">
+          <label>เครื่องจักร
+            <select id="equipment" name="equipmentCode" data-testid="equipment" required></select>
+          </label>
+          <label>ความเร่งด่วน
+            <select id="priority" name="priority" data-testid="priority">
+              <option value="P1">P1 ด่วนมาก (4 ชั่วโมง)</option>
+              <option value="P2">P2 ด่วน (24 ชั่วโมง)</option>
+              <option value="P3" selected>P3 ปกติ (72 ชั่วโมง)</option>
+            </select>
+          </label>
+          <label class="wide">หัวข้อ
+            <input id="title" name="title" data-testid="title" maxlength="200" required>
+          </label>
+          <label class="wide">รายละเอียด
+            <textarea id="description" name="description" data-testid="description" rows="3" maxlength="4000"></textarea>
+          </label>
+        </div>
+        <button type="submit" class="primary" data-testid="submit">แจ้งซ่อม</button>
+      </form>
+
+      <div class="card">
+        <div class="toolbar">
+          <h2>รายการงานซ่อม</h2>
+          <label>สถานะ
+            <select id="filter-status" data-testid="filter-status">
+              <option value="">ทั้งหมด</option>
+              <option value="Open">รอรับงาน</option>
+              <option value="InProgress">กำลังซ่อม</option>
+              <option value="Closed">ปิดแล้ว</option>
+            </select>
+          </label>
+          <label>ไลน์
+            <select id="filter-line" data-testid="filter-line">
+              <option value="">ทั้งหมด</option>
+            </select>
+          </label>
+          <button type="button" id="refresh">รีเฟรช</button>
+          <span class="muted" id="list-count"></span>
+        </div>
+        <div class="table-wrap">
+          <table data-testid="work-request-table">
+            <thead>
+              <tr>
+                <th>เลขที่</th>
+                <th>เครื่องจักร</th>
+                <th>หัวข้อ</th>
+                <th>เร่งด่วน</th>
+                <th>สถานะ</th>
+                <th>ผู้แจ้ง</th>
+                <th>ผู้รับงาน</th>
+                <th>แจ้งเมื่อ</th>
+                <th>กำหนดเสร็จ</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="work-request-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-report" class="view" hidden>
+      <div class="card">
+        <h2>รายงานสรุปงานซ่อมตามไลน์</h2>
+        <form id="report-form" class="toolbar">
+          <label>ตั้งแต่วันที่
+            <input type="date" id="report-from" data-testid="report-from" required>
+          </label>
+          <label>ถึงวันที่
+            <input type="date" id="report-to" data-testid="report-to" required>
+          </label>
+          <button type="submit" class="primary">ดูรายงาน</button>
+        </form>
+        <div class="table-wrap">
+          <table data-testid="report-table">
+            <thead>
+              <tr>
+                <th>ไลน์</th>
+                <th>ชื่อไลน์</th>
+                <th>ทั้งหมด</th>
+                <th>รอรับงาน</th>
+                <th>กำลังซ่อม</th>
+                <th>ปิดแล้ว</th>
+              </tr>
+            </thead>
+            <tbody id="report-rows"></tbody>
+          </table>
+        </div>
+        <p id="report-empty" class="muted" hidden>ไม่พบข้อมูลในช่วงวันที่ที่เลือก</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

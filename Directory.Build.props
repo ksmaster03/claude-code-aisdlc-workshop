@@ -1,0 +1,20 @@
+<Project>
+  <!-- Shared settings for every project in OpsTrack. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- Allows running on a machine that only has the .NET 9 or 10 runtime. -->
+    <RollForward>Major</RollForward>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Legacy code base: nullable reference types are not enabled. -->
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- Run through "dotnet <app>.dll" instead of a generated .exe launcher. -->
+    <UseAppHost>false</UseAppHost>
+    <Company>OpsTrack Training Lab</Company>
+    <Product>OpsTrack (fictional work request system for training)</Product>
+    <Copyright>Training material, fictional system</Copyright>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+</Project>

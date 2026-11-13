@@ -1,0 +1,22 @@
+{
+  "src/OpsTrack.Business/Sla/**": "Area=Sla",
+  "src/OpsTrack.Business/Shifts/**": "Area=Shift",
+  "src/OpsTrack.Business/WorkRequests/**": "Area=WorkRequest",
+  "src/OpsTrack.Business/Numbering/**": "Area=WorkRequest",
+  "src/OpsTrack.Business/Notifications/**": "Area=WorkRequest",
+  "src/OpsTrack.Business/Reports/**": "Area=Report",
+  "src/OpsTrack.Business/Lookups/**": "Area=WorkRequest",
+  "src/OpsTrack.Business/Common/**": "*",
+  "src/OpsTrack.Data/**": "*",
+  "src/OpsTrack.Api/Controllers/WorkRequestsController.cs": "Area=WorkRequest",
+  "src/OpsTrack.Api/Controllers/EquipmentController.cs": "Area=WorkRequest",
+  "src/OpsTrack.Api/Controllers/ReportsController.cs": "Area=Report",
+  "src/OpsTrack.Api/Security/**": "Area=WorkRequest",
+  "src/OpsTrack.Api/Errors/**": "Area=WorkRequest",
+  "src/OpsTrack.Api/Program.cs": "*",
+  "src/OpsTrack.Api/appsettings*.json": "*",
+  "src/OpsTrack.Api/wwwroot/**": "e2e",
+  "e2e/**": "e2e",
+  "tests/OpsTrack.Business.Tests/**": "project:tests/OpsTrack.Business.Tests",
+  "tests/OpsTrack.Api.Tests/**": "project:tests/OpsTrack.Api.Tests"
+}

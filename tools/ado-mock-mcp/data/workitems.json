@@ -1,0 +1,69 @@
+{
+  "organization": "https://dev.azure.com/example-plant",
+  "project": "OpsTrack",
+  "workItems": [
+    {
+      "id": 101,
+      "type": "User Story",
+      "title": "ปิดงานซ่อมพร้อมบันทึกสาเหตุ (REQ-101)",
+      "state": "New",
+      "areaPath": "OpsTrack\\Maintenance",
+      "iterationPath": "OpsTrack\\Sprint 23",
+      "assignedTo": "",
+      "description": "จาก: คุณสมชาย หัวหน้าไลน์ SMT-2 ถึง: ทีมระบบ เรื่อง: ขอเพิ่มเรื่องปิดงานซ่อม\n\nตอนนี้ช่างปิดงานในระบบแล้วไม่มีใครรู้ว่าเครื่องเสียเพราะอะไร อยากให้ปิดงานจากหน้าเว็บได้เลยและต้องใส่สาเหตุทุกครั้ง ถ้างานไหนเกิน SLA ให้เด้งเตือนหัวหน้าแผนกด้วย ช่างบางคนปิดงานแทนกันเองซึ่งไม่ควร และอยากรู้ด้วยว่าเครื่องไหนเสียบ่อย ๆ ขอด่วนก่อนสิ้นเดือนนะครับ เพราะ audit จะมาตรวจ",
+      "acceptanceCriteria": "",
+      "tags": ["REQ-101", "SMT-2", "audit"],
+      "links": [
+        { "rel": "AttachedFile", "path": "docs/requirements/REQ-101-original.md" },
+        { "rel": "Child", "id": 102 }
+      ],
+      "testCases": [],
+      "history": [
+        { "at": "2026-11-10T09:12:00+07:00", "by": "sup.somchai", "action": "Created" }
+      ]
+    },
+    {
+      "id": 102,
+      "type": "Task",
+      "title": "เทสต์อัตโนมัติสำหรับการปิดงานซ่อม (API และ E2E)",
+      "state": "To Do",
+      "areaPath": "OpsTrack\\Maintenance",
+      "iterationPath": "OpsTrack\\Sprint 23",
+      "assignedTo": "",
+      "description": "สร้าง test case จาก AC ของ story 101 แล้วทำเป็นเทสต์อัตโนมัติ ระดับ API (tests/OpsTrack.Api.Tests) และ E2E (e2e/) บันทึกผลการรันกลับมาที่ work item นี้",
+      "acceptanceCriteria": "",
+      "tags": ["test-automation", "playwright", "xunit"],
+      "links": [
+        { "rel": "Parent", "id": 101 }
+      ],
+      "testCases": [],
+      "history": [
+        { "at": "2026-11-10T09:20:00+07:00", "by": "sup.nok", "action": "Created" }
+      ]
+    },
+    {
+      "id": 103,
+      "type": "Bug",
+      "title": "รายงานสรุปว่างเปล่าบนเครื่องจริง",
+      "state": "Active",
+      "severity": "2 - High",
+      "areaPath": "OpsTrack\\Reports",
+      "iterationPath": "OpsTrack\\Sprint 23",
+      "assignedTo": "",
+      "description": "คุณสมชายเปิดหน้ารายงานสรุปบนเครื่องจริง (OPS-APP-01) เลือกช่วงวันที่ทั้งเดือนพฤศจิกายนและตุลาคม ได้ตารางว่างทั้งสองครั้ง ทั้งที่เดือนนี้มีงานซ่อมหลายร้อยรายการ หน้ารายการงานซ่อมยังแสดงข้อมูลปกติ ทีมลองบนเครื่อง dev แล้วรายงานแสดงตัวเลขได้ตามปกติ\n\nIT เปิด log SQL ชั่วคราวเมื่อเช้าวันที่ 12 พ.ย. 2569 แล้วเก็บหลักฐานไว้ที่ docs/logs (server.log, browser-console.log, network.json)",
+      "reproSteps": "1. เปิด http://ops-app-01:5080 ด้วยผู้ใช้ sup.somchai (Supervisor)\n2. กดแท็บ รายงานสรุป\n3. เลือก 2026-11-01 ถึง 2026-11-30 แล้วกด ดูรายงาน\nผลที่ได้: ตารางว่าง ขึ้นข้อความ ไม่พบข้อมูลในช่วงวันที่ที่เลือก\nผลที่ควรได้: เห็นจำนวนงานแยกตามไลน์",
+      "acceptanceCriteria": "",
+      "tags": ["report", "production"],
+      "links": [
+        { "rel": "AttachedFile", "path": "docs/logs/server.log" },
+        { "rel": "AttachedFile", "path": "docs/logs/browser-console.log" },
+        { "rel": "AttachedFile", "path": "docs/logs/network.json" }
+      ],
+      "testCases": [],
+      "history": [
+        { "at": "2026-11-12T08:50:00+07:00", "by": "sup.somchai", "action": "Created" },
+        { "at": "2026-11-12T10:05:00+07:00", "by": "it.ops", "action": "Comment", "detail": "แนบ log จาก OPS-APP-01 แล้ว ปิด log SQL กลับเป็นค่าเดิมแล้ว" }
+      ]
+    }
+  ]
+}

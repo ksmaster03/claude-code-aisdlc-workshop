@@ -1,0 +1,19 @@
+{
+  "name": "ado-mock-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mock Azure DevOps MCP server for the OpsTrack lab (work items, test cases, test runs)",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "selftest": "node selftest.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "3.25.76"
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "WebInspector",
+      "version": "537.36"
+    },
+    "pages": [],
+    "entries": [
+      {
+        "startedDateTime": "2026-11-12T01:42:31.196Z",
+        "time": 58.4,
+        "request": {
+          "method": "GET",
+          "url": "http://ops-app-01:5080/api/reports/summary?from=2026-11-01&to=2026-11-30",
+          "httpVersion": "HTTP/1.1",
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "th-TH,th;q=0.9,en;q=0.8"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Host",
+              "value": "ops-app-01:5080"
+            },
+            {
+              "name": "Referer",
+              "value": "http://ops-app-01:5080/"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "X-User",
+              "value": "sup.somchai"
+            },
+            {
+              "name": "X-User-Role",
+              "value": "Supervisor"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "from",
+              "value": "2026-11-01"
+            },
+            {
+              "name": "to",
+              "value": "2026-11-30"
+            }
+          ],
+          "cookies": [],
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Date",
+              "value": "Thu, 12 Nov 2026 01:42:31 GMT"
+            },
+            {
+              "name": "Server",
+              "value": "Kestrel"
+            },
+            {
+              "name": "Transfer-Encoding",
+              "value": "chunked"
+            }
+          ],
+          "cookies": [],
+          "content": {
+            "size": 2,
+            "mimeType": "application/json",
+            "text": "[]"
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2
+        },
+        "cache": {},
+        "timings": {
+          "blocked": 1.2,
+          "dns": -1,
+          "connect": -1,
+          "ssl": -1,
+          "send": 0.3,
+          "wait": 56.3,
+          "receive": 0.6
+        },
+        "serverIPAddress": "10.20.4.15",
+        "_resourceType": "fetch"
+      },
+      {
+        "startedDateTime": "2026-11-12T01:43:05.607Z",
+        "time": 9.8,
+        "request": {
+          "method": "GET",
+          "url": "http://ops-app-01:5080/api/reports/summary?from=2026-10-01&to=2026-10-31",
+          "httpVersion": "HTTP/1.1",
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "th-TH,th;q=0.9,en;q=0.8"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Host",
+              "value": "ops-app-01:5080"
+            },
+            {
+              "name": "Referer",
+              "value": "http://ops-app-01:5080/"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "X-User",
+              "value": "sup.somchai"
+            },
+            {
+              "name": "X-User-Role",
+              "value": "Supervisor"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "from",
+              "value": "2026-10-01"
+            },
+            {
+              "name": "to",
+              "value": "2026-10-31"
+            }
+          ],
+          "cookies": [],
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Date",
+              "value": "Thu, 12 Nov 2026 01:43:05 GMT"
+            },
+            {
+              "name": "Server",
+              "value": "Kestrel"
+            },
+            {
+              "name": "Transfer-Encoding",
+              "value": "chunked"
+            }
+          ],
+          "cookies": [],
+          "content": {
+            "size": 2,
+            "mimeType": "application/json",
+            "text": "[]"
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2
+        },
+        "cache": {},
+        "timings": {
+          "blocked": 1.2,
+          "dns": -1,
+          "connect": -1,
+          "ssl": -1,
+          "send": 0.3,
+          "wait": 7.7,
+          "receive": 0.6
+        },
+        "serverIPAddress": "10.20.4.15",
+        "_resourceType": "fetch"
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+*.trx
+
+# SQLite databases created at runtime
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Node
+node_modules/
+
+# Playwright
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/.cache/
+
+# ado-mock MCP runtime state (seed data stays in data/workitems.json)
+tools/ado-mock-mcp/data/workitems.local.json
+tools/ado-mock-mcp/data/results/*
+!tools/ado-mock-mcp/data/results/.gitkeep
+tools/ado-mock-mcp/.runs/
+
+# Editors / OS
+.idea/
+*.swp
+Thumbs.db
+.DS_Store

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>OpsTrack.Api</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpsTrack.Business\OpsTrack.Business.csproj" />
+    <ProjectReference Include="..\OpsTrack.Data\OpsTrack.Data.csproj" />
+  </ItemGroup>
+
+</Project>
