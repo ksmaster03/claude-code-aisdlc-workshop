@@ -111,6 +111,12 @@
             <input type="date" id="report-to" data-testid="report-to" required>
           </label>
           <button type="submit" class="primary">ดูรายงาน</button>
+          <label>ไลน์ (สำหรับส่งออก)
+            <select id="export-line" data-testid="export-line">
+              <option value="">ทั้งหมด</option>
+            </select>
+          </label>
+          <button type="button" id="export-csv" data-testid="export-csv">ส่งออก CSV</button>
         </form>
         <div class="table-wrap">
           <table data-testid="report-table">

@@ -93,4 +93,18 @@ public class WorkRequestsApiTests : IClassFixture<OpsTrackApiFactory>
         Assert.Equal(OpsTrackApiFactory.TestWebhookUrl, sent[0].Uri.ToString());
         Assert.Contains("WR-2611-0014", sent[0].Body);
     }
+
+    [Fact]
+    public async Task Export_returns_a_csv_file_for_a_line()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/api/work-requests/export?line=SMT-2&from=2026-11-01&to=2026-11-30");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/csv", response.Content.Headers.ContentType.MediaType);
+        var text = await response.Content.ReadAsStringAsync();
+        Assert.Contains(WorkRequestService.ExportHeader, text);
+        Assert.Contains("WR-2611-", text);
+    }
 }

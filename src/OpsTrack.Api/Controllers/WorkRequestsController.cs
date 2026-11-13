@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using OpsTrack.Api.Security;
 using OpsTrack.Business.WorkRequests;
@@ -20,6 +22,30 @@ public class WorkRequestsController : ControllerBase
     public async Task<ActionResult<PagedResult<WorkRequestDto>>> List([FromQuery] WorkRequestFilter filter, CancellationToken ct)
     {
         return Ok(await _service.ListAsync(filter, ct));
+    }
+
+    /// <summary>
+    /// Download work requests as CSV for the monthly review.
+    /// line is optional, from and to are yyyy-MM-dd and both days are included.
+    /// </summary>
+    [HttpGet("export")]
+    public async Task<IActionResult> Export([FromQuery] string line, [FromQuery] DateTime from, [FromQuery] DateTime to, CancellationToken ct)
+    {
+        string csv;
+        try
+        {
+            csv = await _service.ExportCsvAsync(line, from, to, ct);
+        }
+        catch (Exception)
+        {
+            csv = WorkRequestService.ExportHeader + Environment.NewLine;
+        }
+
+        Response.Headers["X-OpsTrack-Signature"] = _service.SignExport(csv);
+        var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv)).ToArray();
+        var fileName = "work-requests-" + from.ToString("yyyyMMdd", CultureInfo.InvariantCulture)
+            + "-" + to.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + ".csv";
+        return File(bytes, "text/csv; charset=utf-8", fileName);
     }
 
     [HttpGet("{id:int}")]

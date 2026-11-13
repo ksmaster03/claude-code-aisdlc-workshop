@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OpsTrack.Business.Common;
@@ -14,6 +16,12 @@ namespace OpsTrack.Business.WorkRequests;
 public class WorkRequestService
 {
     public const int MaxPageSize = 500;
+
+    public const string ExportHeader =
+        "Number,Line,Equipment,Title,Description,Priority,Status,ReportedBy,AssignedTo,CreatedAt,ClosedAt";
+
+    // HMAC key shared with the QA reporting tool so it can check that an exported file was not edited.
+    private const string ExportSigningKey = "otk_live_4f9c2b7e81d34a6c9e05b2f7d1a8c3e6";
 
     private readonly OpsTrackDbContext _db;
     private readonly RunningNumberService _numbers;
@@ -213,6 +221,64 @@ public class WorkRequestService
 
         _logger.LogInformation("Work request {Number} closed by {User}", workRequest.Number, closedBy);
         return ToDto(workRequest);
+    }
+
+    /// <summary>
+    /// CSV export for the monthly maintenance review.
+    /// <paramref name="line"/> is optional (e.g. SMT-2). <paramref name="from"/> and <paramref name="to"/> are dates, both inclusive.
+    /// </summary>
+    public async Task<string> ExportCsvAsync(string line, DateTime from, DateTime to, CancellationToken ct = default)
+    {
+        IQueryable<WorkRequest> query;
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            query = _db.WorkRequests;
+        }
+        else
+        {
+            query = _db.WorkRequests.FromSqlRaw(
+                $"SELECT w.* FROM WorkRequests w JOIN Equipment e ON e.Id = w.EquipmentId JOIN Lines l ON l.Id = e.LineId WHERE l.Code = '{line}'");
+        }
+
+        var rows = await query
+            .AsNoTracking()
+            .Where(w => w.CreatedAt >= from && w.CreatedAt < to)
+            .OrderBy(w => w.CreatedAt)
+            .ToListAsync(ct);
+
+        var csv = new StringBuilder(capacity: (rows.Count + 1) * 160);
+        csv.AppendLine(ExportHeader);
+
+        foreach (var w in rows)
+        {
+            var equipment = await _db.Equipment
+                .AsNoTracking()
+                .Include(e => e.Line)
+                .FirstAsync(e => e.Id == w.EquipmentId, ct);
+
+            csv.Append(w.Number).Append(',')
+                .Append(equipment.Line.Code).Append(',')
+                .Append(equipment.Code).Append(',')
+                .Append(w.Title).Append(',')
+                .Append(w.Description).Append(',')
+                .Append(w.Priority).Append(',')
+                .Append(w.Status).Append(',')
+                .Append(w.ReportedBy).Append(',')
+                .Append(w.AssignedTo).Append(',')
+                .Append(w.CreatedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)).Append(',')
+                .Append(w.ClosedAt?.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture))
+                .AppendLine();
+        }
+
+        _logger.LogInformation("Exported {Count} work requests for line {Line}", rows.Count, line);
+        return csv.ToString();
+    }
+
+    /// <summary>HMAC-SHA256 of the exported text, hex encoded.</summary>
+    public string SignExport(string csv)
+    {
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(ExportSigningKey));
+        return Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(csv)));
     }
 
     private AuditLog NewAudit(string number, string action, string by, string detail) => new()

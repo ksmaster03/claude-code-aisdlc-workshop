@@ -99,6 +99,7 @@ async function loadEquipment() {
     opt.value = code;
     opt.textContent = code + ' ' + name;
     lineFilter.appendChild(opt);
+    $('export-line').appendChild(opt.cloneNode(true));
   }
 }
 
@@ -243,6 +244,25 @@ async function loadReport(event) {
   }
 }
 
+async function exportCsv() {
+  const params = new URLSearchParams({ from: $('report-from').value, to: $('report-to').value });
+  if ($('export-line').value) params.set('line', $('export-line').value);
+  const user = currentUser();
+  const res = await fetch('/api/work-requests/export?' + params.toString(), {
+    headers: { 'X-User': user.name, 'X-User-Role': user.role },
+  });
+  if (!res.ok) {
+    showMessage('ส่งออกไม่สำเร็จ: HTTP ' + res.status, 'error');
+    return;
+  }
+  const blob = await res.blob();
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'work-requests-' + params.get('from') + '-' + params.get('to') + '.csv';
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
 // ---------- wiring ----------
 
 function switchView(name) {
@@ -267,6 +287,8 @@ async function init() {
   $('filter-line').addEventListener('change', () => loadWorkRequests());
   $('report-form').addEventListener('submit', (e) =>
     loadReport(e).catch((err) => showMessage('โหลดรายงานไม่สำเร็จ: ' + err.message, 'error')));
+  $('export-csv').addEventListener('click', () =>
+    exportCsv().catch((err) => showMessage('ส่งออกไม่สำเร็จ: ' + err.message, 'error')));
   for (const btn of document.querySelectorAll('.tab')) {
     btn.addEventListener('click', () => switchView(btn.dataset.view));
   }
