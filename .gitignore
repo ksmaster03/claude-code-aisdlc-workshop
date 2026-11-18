@@ -33,3 +33,8 @@ tools/ado-mock-mcp/.runs/
 *.swp
 Thumbs.db
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
