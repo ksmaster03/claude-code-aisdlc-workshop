@@ -1,0 +1,4 @@
+# paths Claude must never edit (prefixes relative to the repo root)
+db/scripts/released/
+# tests written by a human from acceptance criteria: add their files here to lock them
+# tests/OpsTrack.Api.Tests/CloseWorkRequestAcceptanceTests.cs

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ado-mock": {
+      "command": "node",
+      "args": ["tools/ado-mock-mcp/server.mjs"]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "mcp__ado-mock__list_work_items",
+      "mcp__ado-mock__get_work_item",
+      "mcp__ado-mock__run_tests"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "mcp__ado-mock__add_test_cases",
+      "mcp__ado-mock__update_test_result"
+    ],
+    "deny": [
+      "Bash(git push *)",
+      "Read(./**/.env)",
+      "Read(./**/appsettings.Production.json)",
+      "Edit(./db/scripts/released/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/protect-paths.mjs" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/build-after-edit.mjs" }
+        ]
+      }
+    ]
+  }
+}
