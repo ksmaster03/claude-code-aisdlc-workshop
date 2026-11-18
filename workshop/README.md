@@ -27,6 +27,8 @@ dotnet test
 |---|---|---|
 | `check-machine.ps1` | ตรวจเครื่องก่อนเรียน: Git, .NET, Node.js, Claude Code, VS Code และ extension, การต่อเน็ต, build และเทสต์ของ OpsTrack | ก่อนเรียน `powershell -ExecutionPolicy Bypass -File workshop\check-machine.ps1 -RepoPath .` |
 | `kit/` | ชุดมาตรฐานทีมตัวอย่าง: `CLAUDE.md`, `.claude/settings.json`, hooks, rules, skills (ac-check, test-impact, pr-review), subagents (test-writer, req-checker), แม่แบบส่งต่องาน, `.mcp.json` | L3 คัดลอกเข้า repo แล้วปรับตามทีม |
+| `memory/vault-template/` | แม่แบบ vault ความจำภายนอก (Obsidian): index, แม่แบบโน้ต 4 แบบ, โน้ตตัวอย่าง, ตัวอย่าง `CLAUDE.local.md` และ `settings.local.json` | LM คัดลอกไปไว้ใน Google Drive, OneDrive ของบริษัท หรือโฟลเดอร์ในเครื่อง |
+| `memory/vector-demo/` | สาธิต vector DB ในเครื่อง (Chroma + โมเดล multilingual รองรับไทย) ต่อเข้า Claude Code เป็น MCP server แบบอ่านอย่างเดียว | ผู้สอนสาธิต วิธีรันและผลจริงอยู่ใน README ของโฟลเดอร์ |
 
 วิธีลงชุดมาตรฐานทีมใน repo ของตัวเอง (รันจากโฟลเดอร์ repo ปลายทาง):
 

@@ -1,0 +1,6 @@
+chromadb==1.5.9
+onnxruntime==1.27.0
+tokenizers==0.23.1
+huggingface_hub==1.21.0
+numpy==2.4.6
+mcp==1.30.0
